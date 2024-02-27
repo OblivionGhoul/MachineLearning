@@ -7,6 +7,8 @@ from sklearn.random_projection import GaussianRandomProjection
 from sklearn.decomposition import PCA
 from sklearn import cluster
 
+numFeatures = 10
+
 # Read the CSV file
 df = pd.read_csv("UNR-IDD.csv")
 le = LabelEncoder()
@@ -33,21 +35,9 @@ print(X.shape)
 print("Classification Report: ")
 print(classification_report(Y_test, Y_pred))
 
-# GaussianRandomProjection
-rp = GaussianRandomProjection(n_components=10)
-X_rp = rp.fit_transform(X)
-print("Label Shape After Gaussian Random Projection: ")
-print(X_rp.shape)
-X_train, X_test, Y_train, Y_test = train_test_split(X_rp, Y, test_size=0.2)
-clf = RandomForestClassifier(n_estimators=100)
-clf.fit(X_train, Y_train)
-
-Y_pred = clf.predict(X_test)
-print("Classification Report with Gaussian Random Projection: ")
-print(classification_report(Y_test, Y_pred))
 
 # PCA
-pca = PCA(n_components=10)
+pca = PCA(n_components=numFeatures)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 X_pca = pca.fit_transform(X_scaled)
@@ -61,8 +51,23 @@ Y_pred = clf.predict(X_test)
 print("Classification Report with PCA: ")
 print(classification_report(Y_test, Y_pred))
 
+
+# GaussianRandomProjection
+rp = GaussianRandomProjection(n_components=numFeatures)
+X_rp = rp.fit_transform(X)
+print("Label Shape After Gaussian Random Projection: ")
+print(X_rp.shape)
+X_train, X_test, Y_train, Y_test = train_test_split(X_rp, Y, test_size=0.2)
+clf = RandomForestClassifier(n_estimators=100)
+clf.fit(X_train, Y_train)
+
+Y_pred = clf.predict(X_test)
+print("Classification Report with Gaussian Random Projection: ")
+print(classification_report(Y_test, Y_pred))
+
+
 # FeatureAgglomeration
-fa = cluster.FeatureAgglomeration(n_clusters=10)
+fa = cluster.FeatureAgglomeration(n_clusters=numFeatures)
 X_fa = fa.fit_transform(X)
 print("Label Shape After Feature Agglomeration: ")
 print(X_fa.shape)
